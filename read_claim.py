@@ -48,23 +48,23 @@ def claim(s, host=default_host, headers = default_headers):
         item_type = int(item['type'])
         if item_type == 3 or item_type == 4:
             if str(item['name']).find(r'Công Pháp') >= 0:
-                items_name = ['Vĩnh Hằng Tử Tinh Cực Thần Công','Vĩnh Hằng Thôn Nhật Chi Thư','Vĩnh Hằng Trích Nguyệt Chi Pháp','']
+                items_name = ['Đại Thiên Toạ Chiếu Đồ Lục','Pháp Chiếu Thần Nhai','Hắc Diệt Thiên Sát Lục','Tà Năng Cấm Pháp Di Thư','Cấm Thuật Thiên Cửu Chương','Ngục Hoạ Pháp Thiên Đồ Lục','Đế Chính Thiên Cảnh Thập Lục Chương']
             elif str(item['name']).find(r'Tàn quyển') >= 0:
-                items_name = ['Vĩnh Hằng Chân Lý']
+                items_name = ['Vĩnh Hằng Chân Lý','Tàn quyển']
             elif str(item['name']).find(r'Công kích vũ kỹ') >= 0:
-                items_name = ['Cầu Ma']
+                items_name = ['Công kích vũ kỹ','Đoạt Mệnh Nhất Thương','Thất Thương Quyền','Bát Cực Quyền']
             elif str(item['name']).find(r'Công kích bí kỹ') >= 0:
-                items_name = ['Thiên Tịch']
+                items_name = ['Tử Tích Thiên Trầm Sinh Diệt Lực','Sơ Nguyên Cự Ám Thần Lực','Chư Tà Tổ Nguyên Thần Lực','Thập Cấm Thiên Tức Thần Ma Lực','Đế Cảnh Ngự Thần Lực','Nguyên Sơ Cực Cấm Tổ Lực']
             elif str(item['name']).find(r'Thân pháp') >= 0:
-                items_name = ['Đạp Đạo']
+                items_name = ['Thân pháp','Cân Đẩu Vân','Thiên Ma Bát Bộ','Geppo','Soru']
             elif str(item['name']).find(r'Tinh thần bí pháp') >= 0:
-                items_name = ['Cuồng Pháp']
+                items_name = ['Tinh thần bí pháp','Vĩnh Hoả Anh Hùng','Cương Quyết Chi Tâm','Tử Huyết Thánh Ca']
             elif str(item['name']).find(r'Luyện thể thần công') >= 0:
-                items_name = ['Ma Luyện Thần Thoại']
+                items_name = ['Luyện thể thần công','Thần Tượng Kinh']
             elif str(item['name']).find(r'Luyện thể công pháp') >= 0:
-                items_name = ['Dũng Khí Vẫn Lạc Ác Ảnh Vãng Lai']
+                items_name = ['Luyện thể công pháp']
             elif str(item['name']).find(r'Phòng ngự vũ kỹ') >= 0:
-                items_name = ['Cương Quyết Chi Tâm']
+                items_name = ['Phòng ngự vũ kỹ','Tekkai','Kim Chung Tráo','Thiết Bố Sam']
             else:
                 items_name = [item['name']]
             item_info = item['info']

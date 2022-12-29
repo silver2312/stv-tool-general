@@ -5,6 +5,7 @@ from login import login
 from bi_kip import use_bk
 from read_claim import read, online, claim
 from up_rut_tbc import up_tbc, rut_tbc, clean_profile
+from default import *
 f = open('account.json', )
 data = json.load(f)
 host = data[0]['host']
@@ -65,88 +66,118 @@ def choose_action():
         x = 0
     return x
 
+def choose_account(x=0):
+    if len(data) > 0:
+        clear()
+        print(choose[x])
+        print('\nChọn tài khoản muốn dùng')
+        k_data = 0
+        while k_data < len(data):
+            print(k_data, ':',data[k_data]['username'],'-',data[k_data]['pwd'],'-',data[k_data]['id'])
+            k_data +=1
+        print((len(data)),': Thêm tài khoản mới')
+        try:
+            y = int(input("Nhập số: "))
+            if y < 0:
+                y = 0
+        except:
+            y = 0
+        if y < 0 or y > len(data):
+            print('Nhập sai vui lòng chạy lại.')
+            exit()
+        if y == len(data):
+            clear()
+            print('Nhập thông tin tài khoản mới ')
+            username = input("Tài khoản: ")
+            password = input("Mật khẩu: ")
+            acc_id = input("ID: ")
+            new_account(username,password,acc_id)
+        else:
+            check_edit = input('Bạn có muốn sửa thông tin tài khoản không(y/n - default: n)?  ')
+            username = data[y]['username']
+            password = data[y]['pwd']
+            acc_id = data[y]['id']
+            if check_edit == 'y':
+                print('Sửa thông tin tài khoản:')
+                new_username = input('Nhập tài khoản mới: ')
+                new_pwd = input('Nhập mật khẩu mới: ')
+                new_id = input('Nhập id mới: ')
+                data[y]['username'] = new_username
+                data[y]['pwd'] = new_pwd
+                data[y]['id'] = new_id
+                if not new_username or not new_pwd or not new_id:
+                    print('vui lòng nhập đầy đủ thông tin')
+                    exit()
+                with open('account.json', 'w', encoding='utf8') as s:
+                            json.dump(data,s, indent=4, sort_keys=True, ensure_ascii=False)
+                username = new_username
+                password = new_pwd
+                acc_id = new_id
+    else:
+        clear()
+        print(choose[x])
+        print('Thêm tài khoản mới: ')
+        username = input("Tài khoản: ")
+        password = input("Mật khẩu: ")
+        acc_id = input("ID: ")
+        if not username or not password or not acc_id:
+            print('Vui lòng nhập đầy đủ thông tin')
+            exit()
+        new_account(username,password,acc_id)
+        y = 0
+    context = {
+        'y': y,
+        'username': username,
+        'password': password,
+        'id': acc_id
+    }
+    return context
+
 clear()
 intro()
 #chọn muốn làm gì
 x = choose_action()
 #chọn tài khoản
-if len(data) > 0:
-    clear()
-    print(choose[x])
-    print('\nChọn tài khoản muốn dùng')
-    k_data = 0
-    while k_data < len(data):
-        print(k_data, ':',data[k_data]['username'],'-',data[k_data]['pwd'],'-',data[k_data]['id'])
-        k_data +=1
-    print((len(data)),': Thêm tài khoản mới')
-    y = input("Nhập số: ")
-    try:
-        y = int(y)
-    except:
-        y = 0
-    if y < 0 or y > len(data):
-        print('Nhập sai vui lòng chạy lại.')
-        exit()
-    if y == len(data):
-        clear()
-        print('Nhập thông tin tài khoản mới ')
-        username = input("Tài khoản: ")
-        password = input("Mật khẩu: ")
-        acc_id = input("ID: ")
-        new_account(username,password,acc_id)
-    else:
-        check_edit = input('Bạn có muốn sửa thông tin tài khoản không(y/n - default: n)?  ')
-        username = data[y]['username']
-        password = data[y]['pwd']
-        acc_id = data[y]['id']
-        if check_edit == 'y':
-            print('Sửa thông tin tài khoản:')
-            new_username = input('Nhập tài khoản mới: ')
-            new_pwd = input('Nhập mật khẩu mới: ')
-            new_id = input('Nhập id mới: ')
-            data[y]['username'] = new_username
-            data[y]['pwd'] = new_pwd
-            data[y]['id'] = new_id
-            if not new_username or not new_pwd or not new_id:
-                print('vui lòng nhập đầy đủ thông tin')
-                exit()
-            with open('account.json', 'w', encoding='utf8') as s:
-                        json.dump(data,s, indent=4, sort_keys=True, ensure_ascii=False)
-            username = new_username
-            password = new_pwd
-            acc_id = new_id
-else:
-    clear()
-    print(choose[x])
-    print('Thêm tài khoản mới: ')
-    username = input("Tài khoản: ")
-    password = input("Mật khẩu: ")
-    acc_id = input("ID: ")
-    if not username or not password or not acc_id:
-        print('Vui lòng nhập đầy đủ thông tin')
-        exit()
-    new_account(username,password,acc_id)
+choose_accounts = choose_account(x)
+y = choose_accounts['y']
+username = choose_accounts['username']
+password = choose_accounts['password']
+acc_id = choose_accounts['id']
 #kiểm tra hành động
 if x == 4:
-    print('Mặc định id: 95000')
+    print('Mặc định id:',default_uid)
     tl16 = input('Nhập id người nhận tụ linh 16: ')
     tl32 = input('Nhập id người nhận tụ linh 32: ')
     tl64 = input('Nhập id người nhận tụ linh 64: ')
     orther = input('Nhập id người nhận đồ còn lại: ')
+    if not tl16:
+        tl16 = default_uid
+    if not tl32:
+        tl32 = default_uid
+    if not tl64:
+        tl64 = default_uid
+    if not orther:
+        orther = default_uid
 elif x == 3:
-    so_luong = input('Nhập số lượng 1 lần up(default:200): ')
-    if so_luong:
-        try:
-            so_luong = int(so_luong)
-            if so_luong <= 0:
-                so_luong = 200
-        except:
+    try:
+        so_luong = int(input('Nhập số lượng 1 lần up(default:200): '))
+        if so_luong <= 0:
             so_luong = 200
+    except:
+        so_luong = 200
 elif x == 5:
     check_lt = input('Dọn linh thạch(y/n - default: y): ')
     check_lb = input('Dọn lệnh bài(y/n - default: y): ')
     check_ttd = input('Dọn tẩy tuỷ đan(y/n - default: y): ')
     check_bk = input('Dọn bí kíp(y/n - default: y): ')
+    if not check_lt:
+        check_lt = 'y'
+    if not check_lb:
+        check_lb = 'y'
+    if not check_ttd:
+        check_ttd = 'y'
+    if not check_bk:
+        check_bk = 'y'
 
 if x == 0 or x == 1 or x == 2:
     default_time1 = data[y]['time1']
@@ -184,31 +215,31 @@ with requests.session() as s:
             try:
                 if x == 0:
                     print('Tự động tu luyện       ')
-                    read(s, host = host, user_agent = user_agent)
-                    online(s, acc_id, host = host, headers = headers)
+                    read(s, host, user_agent)
+                    online(s, acc_id, host, headers)
                 elif x == 1:
                     print('Tự động nhặt đồ        ')
-                    claim(s, host = host, headers = headers)
+                    claim(s, host, headers)
                 elif x == 2:
                     print('Tự động tu luyện + nhặt     ')
-                    read(s, host = host, user_agent = user_agent)
-                    online(s, acc_id, host = host, headers = headers)
-                    claim(s, host = host, headers = headers)
+                    read(s, host, user_agent)
+                    online(s, acc_id, host, headers)
+                    claim(s, host, headers)
                 elif x == 3:
                     print('Tự động up đồ bang         ')
-                    up_tbc(s, so_luong, host = host, headers = headers)
+                    up_tbc(s, so_luong, host, headers)
                 elif x == 4:
                     print('Tự động rút đồ bang       ')
-                    rut_tbc(s, tl16, tl32, tl64, orther, host = host, headers = headers)
+                    rut_tbc(s, tl16, tl32, tl64, orther,host, headers)
                 elif x == 5:
                     print('Tự động dọn túi          ')
-                    clean_profile(s,check_lt, check_lb, check_ttd, check_bk, host = host, headers = headers)
+                    clean_profile(s,check_lt, check_lb, check_ttd, check_bk, host, headers)
                 elif x == 6:
                     print('Tự động sử dụng bí kíp          ')
-                    use_bk(s, host = host, headers = headers)
+                    use_bk(s, host, headers)
                 else:
                     print('Vui lòng nhập đúng số     ')
             except:
-                print('Có Lỗi xảy ra            ')
+                print('Có lỗi xảy ra')
             print("===========================================")
             time.sleep(2)

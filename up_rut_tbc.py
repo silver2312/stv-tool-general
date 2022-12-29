@@ -4,48 +4,45 @@ import datetime
 
 def up_tbc(s, so_luong=200, host =default_host, headers=default_headers):
     x = datetime.datetime.now().strftime("%H:%M:%S")
-    try:
-        tbc = s.get(url=host + '/the-luc/tang-bao-cac/', headers=headers)
-        soup = BeautifulSoup(tbc.content, 'html.parser')
-        list_a = soup.select('#tuitruvat > a')
-        if len(list_a) > 0:
-            if tbc.status_code == 200:
-                print('Đã lấy danh sách đồ thành công    ')
-            print(x + ': bạn đang có ' + str(len(list_a)) + ' đồ    ')
-            item_id = ''
-            j = 1
-            sl = []
-            for li in list_a:
-                if j <= so_luong and j <= len(list_a) and li.get_text().find(r'Linh Thạch') < 0 and li.get_text().find(
-                        r'Tẩy Tủy Đan') < 0:
-                    item = li['iid']
-                    item_id += (item + ',')
-                    sl.append(item)
-                    j += 1
-            if len(sl) > 0:
-                data_upload = {
-                    'ajax': 'faction',
-                    'sub': 'putstorage',
-                    'itemlist': item_id[:-1]
-                }
-                uptbc = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_upload)
-                if str(uptbc.text).find('ss') > 0:
-                    print('Đã up ' + str(len(sl)) + ' đồ    ')
-                else:
-                    print(uptbc.text)
-                    uptbc_1 = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_upload)
-                    if uptbc_1.status_code == 500:
-                        print('Server quá tải                  ')
-                    else:
-                        print('Đã up ' + str(len(sl)) + ' đồ    ')
+    tbc = s.get(url=host + '/the-luc/tang-bao-cac/', headers=headers)
+    soup = BeautifulSoup(tbc.content, 'html.parser')
+    list_a = soup.select('#tuitruvat > a')
+    if len(list_a) > 0:
+        if tbc.status_code == 200:
+            print('Đã lấy danh sách đồ thành công    ')
+        print(x + ': bạn đang có ' + str(len(list_a)) + ' đồ    ')
+        item_id = ''
+        j = 1
+        sl = []
+        for li in list_a:
+            if j <= so_luong and j <= len(list_a) and li.get_text().find(r'Linh Thạch') < 0 and li.get_text().find(
+                    r'Tẩy Tủy Đan') < 0:
+                item = li['iid']
+                item_id += (item + ',')
+                sl.append(item)
+                j += 1
+        if len(sl) > 0:
+            data_upload = {
+                'ajax': 'faction',
+                'sub': 'putstorage',
+                'itemlist': item_id[:-1]
+            }
+            uptbc = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_upload)
+            if str(uptbc.text).find('ss') > 0:
+                print('Đã up ' + str(len(sl)) + ' đồ    ')
             else:
-                print('Chưa có đồ để up    ')
+                print(uptbc.text)
+                uptbc_1 = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_upload)
+                if uptbc_1.status_code == 500:
+                    print('Server quá tải                  ')
+                else:
+                    print('Đã up ' + str(len(sl)) + ' đồ    ')
         else:
-            print(x + ': đã hết đồ trong túi')
-    except:
-        print('Lỗi up đồ bang             ')
-
-def rut_tbc(s, tl16=default_uid, tl32=default_uid, tl64=default_uid , orther=default_uid, host=default_host, headers=default_headers):
+            print('Chưa có đồ để up    ')
+    else:
+        print(x + ': đã hết đồ trong túi')
+    
+def rut_tbc(s, tl16, tl32, tl64 , orther, host, headers=default_headers):
     x = datetime.datetime.now().strftime("%H:%M:%S")
     tbc = s.get(url=host + '/the-luc/tang-bao-cac/', headers=headers)
     soup = BeautifulSoup(tbc.content, 'html.parser')
@@ -53,7 +50,7 @@ def rut_tbc(s, tl16=default_uid, tl32=default_uid, tl64=default_uid , orther=def
     if len(list_kho) > 0:
         if tbc.status_code == 200:
             print('Đã lấy danh sách đồ thành công    ')
-        print(x + ': bạn đang có ' + str(len(list_kho)) + ' đồ    ')
+        print(x + ': Kho đang có ' + str(len(list_kho)) + ' đồ    ')
         list_orther = ''
         list_16 = ''
         list_32 = ''
@@ -113,36 +110,36 @@ def rut_tbc(s, tl16=default_uid, tl32=default_uid, tl64=default_uid , orther=def
         if len(sl_16) > 0:
             rut_tbc16 = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_tl16)
             if str(rut_tbc16.text).find(r'Lỗi') >= 0:
-                print(rut_tbc16.text + '    ')
+                print(x,rut_tbc16.text + '    ')
             else:
-                print(x,': Đã chuyển ',len(sl_16),' tụ linh 16 cho id: ',tl16)
+                print(x,': Đã chuyển',len(sl_16),'tụ linh 16 cho id: '+tl16)
         else:
             print('Chưa có tụ linh 16 để rút    ')
         # tụ linh 32
         if len(sl_32) > 0:
             rut_tbc32 = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_tl32)
             if str(rut_tbc32.text).find(r'Lỗi') >= 0:
-                print(rut_tbc32.text + '    ')
+                print(x,rut_tbc32.text + '    ')
             else:
-                print(x,': Đã chuyển ',len(sl_32),' tụ linh 32 cho id: ',tl32)
+                print(x,': Đã chuyển',len(sl_32),'tụ linh 32 cho id: '+tl32)
         else:
             print('Chưa có tụ linh 32 để rút    ')
         # tụ linh 64
         if len(sl_64) > 0:
             rut_tbc64 = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_tl64)
             if str(rut_tbc64.text).find(r'Lỗi') >= 0:
-                print(rut_tbc64.text + '    ')
+                print(x,rut_tbc64.text + '    ')
             else:
-                print(x,': Đã chuyển ',len(sl_64),' tụ linh 16 cho id: ',tl64)
+                print(x,': Đã chuyển',len(sl_64),'tụ linh 16 cho id: '+tl64)
         else:
             print('Chưa có tụ linh 64 để rút    ')
         # đồ khác
         if len(sl_other) > 0:
             rut_tbc_another = s.post(url=host + '/index.php?ngmar=fact', headers=headers, data=data_other)
             if str(rut_tbc_another.text).find(r'Lỗi') >= 0:
-                print(rut_tbc_another.text + '    ')
+                print(x,rut_tbc_another.text + '    ')
             else:
-                print(x,': Đã chuyển ',len(sl_other),' đồ cho id: ',orther)
+                print(x,': Đã chuyển',len(sl_other),'đồ cho id: '+orther)
         else:
             print('Chưa có đồ để rút    ')
     else:
